@@ -1,9 +1,16 @@
-message = input("Enter a phrase to cipher/decrypt: ")
-message = message.lower()
+import argparse
 
-cipher_method = input("Input C to Cipher | Enter D to Decipher: ")
+parser = argparse.ArgumentParser(description="Cipher or decipher messages using the Caesar Cipher")
+parser.add_argument("message", type=str, help="Input message to cipher/decipher" )
+parser.add_argument("method", type=str, choices=['c', 'd'], default="c", help="Input c to cipher message / d to decipher" )
+parser.add_argument("shift", type=int, help="Cipher shift amount (0 - 25)")
 
-shift = input("Enter a shift amount between 0 and 25: ")
+args = parser.parse_args()
+
+if not 0 <= args.shift <= 25:
+    parser.error("Shift must be between 0 and 25")
+
+message = args.message.lower()
 
 ciphered_message = ""
 
@@ -12,15 +19,15 @@ for letter in message:
         ciphered_message += letter
     elif letter.isalpha(): 
         position = ord(letter) - ord("a")
-        if cipher_method == "C":
-            shifted_position = (position + int(shift)) % 26
-        else: 
-            shifted_position = (position - int(shift)) % 26
+        if args.method == "c":
+            shifted_position = (position + args.shift) % 26
+        else:
+            shifted_position = (position - args.shift) % 26
 
         shifted_letter = chr(shifted_position + ord("a"))
         ciphered_message += shifted_letter
 
-if cipher_method == "C":
+if args.method == "c":
     print(f"Your ciphered message is: {ciphered_message.upper()}")
 else:
     print(f"Your deciphered message is: {ciphered_message.upper()}")
